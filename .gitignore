@@ -1,4 +1,4 @@
 ## IDEA
-.idea/
+.idea/workspace.xml
+.idea/misc.xml
 out/
-*.iml
