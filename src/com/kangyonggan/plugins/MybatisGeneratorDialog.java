@@ -99,6 +99,7 @@ public class MybatisGeneratorDialog extends JDialog {
         JButton genButton = new JButton("Generate");
         genButton.setBounds(259, 560, 100, 35);
         genButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 onGenerate();
             }
@@ -109,6 +110,7 @@ public class MybatisGeneratorDialog extends JDialog {
         JButton revertButton = new JButton("Revert");
         revertButton.setBounds(390, 560, 100, 35);
         revertButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 onRevert();
             }

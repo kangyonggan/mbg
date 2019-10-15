@@ -26,7 +26,7 @@
         <action id="Mybatis Generator" class="com.kangyonggan.plugins.MainAction" text="Mybatis Generator"
                 description="Mybatis Generator">
             <add-to-group group-id="CodeMenu" anchor="first"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt G"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt G"/>
         </action>
     </actions>
 </idea-plugin>
