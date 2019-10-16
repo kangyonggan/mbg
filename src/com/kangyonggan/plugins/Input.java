@@ -1,5 +1,8 @@
 package com.kangyonggan.plugins;
 
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
+
 import javax.swing.*;
 
 /**
@@ -17,9 +20,11 @@ public class Input {
 
     private static JPanel contentPane;
     private static int y;
+    private static SettingService settingService;
 
-    public static void reset(JPanel jPanel) {
+    static void reset(JPanel jPanel, Project proj) {
         contentPane = jPanel;
+        settingService = ServiceManager.getService(proj, SettingService.class);
         y = 10;
     }
 
@@ -27,7 +32,7 @@ public class Input {
         return y;
     }
 
-    public Input(String label, String text, String tip) {
+    public Input(String label, String tip) {
         JLabel jLabel = new JLabel(label + "：");
         jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         jLabel.setBounds(LABEL_X, y, LABEL_WIDTH, HEIGHT);
@@ -35,7 +40,7 @@ public class Input {
 
         JTextField jTextField = new JTextField();
         jTextField.setToolTipText(tip);
-        jTextField.setText(text);
+        jTextField.setText(settingService.getValueBySettingName(label.replaceAll(" ", "")));
         jTextField.setBounds(TEXT_FIELD_X, y, TEXT_FIELD_WIDTH, HEIGHT);
         contentPane.add(jTextField);
 

@@ -2,7 +2,7 @@
     <id>com.kangyonggan.plugins.mbg</id>
     <name>Mybatis Generator</name>
     <version>1.0</version>
-    <vendor email="java@kangyonggan.com" url="http://www.kangyonggan.com">永康科技</vendor>
+    <vendor email="java@kangyonggan.com" url="http://www.kangyonggan.com">康永敢</vendor>
 
     <description><![CDATA[Mybatis Generator Plugin can help us reverse the generated code]]></description>
 
@@ -19,6 +19,10 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <projectService
+                serviceInterface="com.kangyonggan.plugins.SettingService"
+                serviceImplementation="com.kangyonggan.plugins.SettingService">
+        </projectService>
     </extensions>
 
     <actions>

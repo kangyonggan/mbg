@@ -1,5 +1,8 @@
 package com.kangyonggan.plugins;
 
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,22 +13,18 @@ import java.awt.event.ActionListener;
  */
 public class MybatisGeneratorDialog extends JDialog {
 
-    /**
-     * 测试入口
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        new MybatisGeneratorDialog();
-        System.exit(0);
-    }
-
     private JPanel contentPane;
+    private Project project;
+    private SettingService settingService;
 
     /**
      * 对话框入口
+     *
+     * @param project
      */
-    public MybatisGeneratorDialog() {
+    public MybatisGeneratorDialog(Project project) {
+        this.project = project;
+        this.settingService = ServiceManager.getService(project, SettingService.class);
         init();
     }
 
@@ -49,7 +48,8 @@ public class MybatisGeneratorDialog extends JDialog {
      */
     private void initDialog() {
         setContentPane(contentPane);
-        Input.reset(contentPane);
+        Input.reset(contentPane, project);
+
         // 布局
         contentPane.setLayout(null);
         // 背景
@@ -57,7 +57,7 @@ public class MybatisGeneratorDialog extends JDialog {
         // 标题
         setTitle("Mybatis Generator");
         // 大小
-        setSize(800, 650);
+        setSize(800, 590);
         // 位置
         setLocationRelativeTo(null);
     }
@@ -66,38 +66,40 @@ public class MybatisGeneratorDialog extends JDialog {
      * 初始化表单
      */
     private void initForm() {
-        new Input("Host", "127.0.0.1", "数据库IP地址");
-        new Input("Port", "3306", "数据库端口");
-        new Input("Database", "demodb", "数据库名称");
-        new Input("User", "root", "用户名");
-        new Input("Password", "123456", "密码");
-        new Input("Table Name", "tb_user", "表名");
-        new Input("Model Name", "User", "实体名");
-        new Input("Model Project", "src/main/java", "实体所在的项目");
-        new Input("Model Package", "com.kangyonggan.demo.model", "实体所在的包名");
-        new Input("Mapper Java Project", "src/main/java", "Mapper.java所在的项目");
-        new Input("Mapper Java Package", "com.kangyonggan.demo.mapper", "Mapper.java所在的包名");
-        new Input("Mapper Xml Project", "src/main/resources", "Mapper.xml所在的项目");
-        new Input("Mapper Xml Package", "mapper", "Mapper.xml所在的包名");
+        new Input("DriverClass", "连接数据库驱动");
+        new Input("Url", "数据库连接地址");
+        new Input("User", "用户名");
+        new Input("Password", "密码");
+        new Input("Table Name", "表名");
+        new Input("Model Name", "实体名");
+        new Input("Model Project", "实体所在的项目");
+        new Input("Model Package", "实体所在的包名");
+        new Input("Mapper Java Project", "Mapper.java所在的项目");
+        new Input("Mapper Java Package", "Mapper.java所在的包名");
+        new Input("Mapper Xml Project", "Mapper.xml所在的项目");
+        new Input("Mapper Xml Package", "Mapper.xml所在的包名");
 
         JCheckBox mapperPlugin = new JCheckBox("Mapper Plugin");
-        mapperPlugin.setSelected(true);
-        mapperPlugin.setBounds(256, Input.getY(), 130, 35);
+        mapperPlugin.setToolTipText("是否使用通用Mapper插件");
+        mapperPlugin.setSelected(settingService.isMapperPlugin());
+        mapperPlugin.setBounds(260, Input.getY(), 130, 35);
         contentPane.add(mapperPlugin);
 
         JCheckBox serializablePlugin = new JCheckBox("Serializable Plugin");
-        serializablePlugin.setSelected(true);
-        serializablePlugin.setBounds(390, Input.getY(), 130, 35);
+        serializablePlugin.setToolTipText("是否使用序列化插件");
+        serializablePlugin.setSelected(settingService.isSerializablePlugin());
+        serializablePlugin.setBounds(390, Input.getY(), 150, 35);
         contentPane.add(serializablePlugin);
 
         JCheckBox lombokPlugin = new JCheckBox("Lombok Plugin");
-        lombokPlugin.setSelected(true);
-        lombokPlugin.setBounds(530, Input.getY(), 130, 35);
+        lombokPlugin.setToolTipText("是否使用Lombok插件");
+        lombokPlugin.setSelected(settingService.isLombokPlugin());
+        lombokPlugin.setBounds(540, Input.getY(), 130, 35);
         contentPane.add(lombokPlugin);
 
         // OK Button
         JButton genButton = new JButton("Generate");
-        genButton.setBounds(259, 560, 100, 35);
+        genButton.setBounds(260, Input.getY() + 50, 100, 35);
         genButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -108,7 +110,7 @@ public class MybatisGeneratorDialog extends JDialog {
 
         // Revert Button
         JButton revertButton = new JButton("Revert");
-        revertButton.setBounds(390, 560, 100, 35);
+        revertButton.setBounds(390, Input.getY() + 50, 100, 35);
         revertButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -119,7 +121,10 @@ public class MybatisGeneratorDialog extends JDialog {
     }
 
     private void onGenerate() {
-        dispose();
+        String[] args = new String[2];
+        args[0] = "-configfile";
+        args[1] = "generatorConfig.xml";
+        MbgRunner.main(args);
     }
 
     private void onRevert() {
